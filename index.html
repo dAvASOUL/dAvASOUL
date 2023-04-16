@@ -171,7 +171,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2023-04-16 15:40:24 / 修改时间：15:47:31" itemprop="dateCreated datePublished" datetime="2023-04-16T15:40:24+08:00">2023-04-16</time>
+      <time title="创建时间：2023-04-16 15:40:24 / 修改时间：15:52:45" itemprop="dateCreated datePublished" datetime="2023-04-16T15:40:24+08:00">2023-04-16</time>
     </span>
 
   
@@ -197,7 +197,7 @@
 <p>如果一个 Broker 发生故障，Pulsar 会自动将其拥有的主题分区移动到群集中剩余的某一个可用 Broker 中。重点说明：由于 Broker 是无状态的，因此当发生 Topic 的迁移时，Pulsar 只是将所有权从一个 Broker 转移到另一个 Broker，并不会有任何数据复制发生，故障转移非常轻量。</p>
 <p>下图显示了一个拥有 4 个 Broker 的 Pulsar 集群，其中 4 个主题分区分布在 4 个 Broker 中。每个 Broker 拥有并为一个主题分区提供消息服务。</p>
 <p><img src="https://static001.geekbang.org/infoq/b1/b147d65753248afeda1941f2523c2dd4.png" alt="img"></p>
-<h2 id="2-3-Bookeeper"><a href="#2-3-Bookeeper" class="headerlink" title="2.3 Bookeeper"></a><strong>2.3 Bookeeper</strong></h2><p>Apache BookKeeper 是 Apache Pulsar 的持久化存储层。Apache Pulsar 中的每个主题分区本质上都是存储在 Apache BookKeeper 中的分布式日志。</p>
+<h3 id="2-3-Bookeeper"><a href="#2-3-Bookeeper" class="headerlink" title="2.3 Bookeeper"></a><strong>2.3 Bookeeper</strong></h3><p>Apache BookKeeper 是 Apache Pulsar 的持久化存储层。Apache Pulsar 中的每个主题分区本质上都是存储在 Apache BookKeeper 中的分布式日志。</p>
 <p>每个分布式日志又被分为 Segment 分段。每个 Segment 分段作为 Apache BookKeeper 中的一个 Ledger，均匀分布并存储在 BookKeeper 群集中的多个 Bookie 中。</p>
 <p>通过 Segment 分段的方式，主题分区中的消息可以均匀和平衡地分布在群集中的所有 Bookie 中。这意味着主题分区的大小不仅受一个节点容量的限制；相反，它可以扩展到整个 BookKeeper 集群的总容量。</p>
 <p>下面的图说明了一个分为 x 个 Segment 段的主题分区。每个 Segment 段存储 3 个副本。所有 Segment 都分布并存储在 4 个 Bookie 中。</p>
