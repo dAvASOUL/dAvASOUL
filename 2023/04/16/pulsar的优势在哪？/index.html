@@ -19,12 +19,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"davasoul.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="一、前言 Pulsar 是一个多租户，高性能的服务间消息解决方案。最初由 Yahoo 开发，现在由 Apache Software Foundation 负责。 Pulsar 是消息队列领域的一匹黑马，其最大优点在于它提供了比 Apache Kafka 更简单明了、更健壮的一系列操作功能，支持地域复制和多租户。此外，相比传统的 Kafka、RocketMQ 等，Pulsar 更加适合 IoT 的场">
+    <meta name="description" content="一、前言Pulsar 是一个多租户，高性能的服务间消息解决方案。最初由 Yahoo 开发，现在由 Apache Software Foundation 负责。 Pulsar 是消息队列领域的一匹黑马，其最大优点在于它提供了比 Apache Kafka 更简单明了、更健壮的一系列操作功能，支持地域复制和多租户。此外，相比传统的 Kafka、RocketMQ 等，Pulsar 更加适合 IoT 的场景">
 <meta property="og:type" content="article">
 <meta property="og:title" content="pulsar的优势在哪？">
 <meta property="og:url" content="https://davasoul.github.io/2023/04/16/pulsar%E7%9A%84%E4%BC%98%E5%8A%BF%E5%9C%A8%E5%93%AA%EF%BC%9F/index.html">
 <meta property="og:site_name" content="小代的博客">
-<meta property="og:description" content="一、前言 Pulsar 是一个多租户，高性能的服务间消息解决方案。最初由 Yahoo 开发，现在由 Apache Software Foundation 负责。 Pulsar 是消息队列领域的一匹黑马，其最大优点在于它提供了比 Apache Kafka 更简单明了、更健壮的一系列操作功能，支持地域复制和多租户。此外，相比传统的 Kafka、RocketMQ 等，Pulsar 更加适合 IoT 的场">
+<meta property="og:description" content="一、前言Pulsar 是一个多租户，高性能的服务间消息解决方案。最初由 Yahoo 开发，现在由 Apache Software Foundation 负责。 Pulsar 是消息队列领域的一匹黑马，其最大优点在于它提供了比 Apache Kafka 更简单明了、更健壮的一系列操作功能，支持地域复制和多租户。此外，相比传统的 Kafka、RocketMQ 等，Pulsar 更加适合 IoT 的场景">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://static001.geekbang.org/infoq/0e/0eb8d6c121926b5bf559d3ee5c9334da.png">
 <meta property="og:image" content="https://static001.geekbang.org/infoq/b1/b147d65753248afeda1941f2523c2dd4.png">
@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://static001.geekbang.org/infoq/fc/fcb61f6bd6c31a3b513c4411f8ef6507.png">
 <meta property="og:image" content="https://static001.geekbang.org/infoq/4b/4b146de1e7639b905c3633e057c2582d.png">
 <meta property="article:published_time" content="2023-04-16T07:40:24.000Z">
-<meta property="article:modified_time" content="2023-04-16T07:41:49.626Z">
+<meta property="article:modified_time" content="2023-04-16T07:47:31.384Z">
 <meta property="article:author" content="MR.D">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://static001.geekbang.org/infoq/0e/0eb8d6c121926b5bf559d3ee5c9334da.png">
@@ -116,7 +116,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Bookeeper"><span class="nav-number">1.</span> <span class="nav-text">2.3 Bookeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E4%BC%98%E5%8A%BF"><span class="nav-number">2.</span> <span class="nav-text">2.4 优势</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E9%99%90%E5%88%B6%E7%9A%84%E4%B8%BB%E9%A2%98%E5%88%86%E5%8C%BA%E5%AD%98%E5%82%A8"><span class="nav-number">2.1.</span> <span class="nav-text">无限制的主题分区存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%BC%9D-Broker-%E6%95%85%E9%9A%9C%E6%81%A2%E5%A4%8D"><span class="nav-number">2.2.</span> <span class="nav-text">无缝 Broker 故障恢复</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%BC%9D-Bookeeper-%E6%95%85%E9%9A%9C%E6%81%A2%E5%A4%8D"><span class="nav-number">2.3.</span> <span class="nav-text">无缝 Bookeeper 故障恢复</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%BC%9D%E9%9B%86%E7%BE%A4%E6%89%A9%E5%B1%95"><span class="nav-number">2.4.</span> <span class="nav-text">无缝集群扩展</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8B"><span class="nav-number"></span> <span class="nav-text">三、消息模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E9%80%9A%E7%94%A8%E7%9A%84%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8B"><span class="nav-number"></span> <span class="nav-text">3.1 通用的消息模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E9%80%9A%E7%94%A8%E7%9A%84%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%9E%8B"><span class="nav-number"></span> <span class="nav-text">3.2 通用的消费模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E6%A8%A1%E5%9E%8B"><span class="nav-number"></span> <span class="nav-text">队列模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">流模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-Pulsar-%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9"><span class="nav-number"></span> <span class="nav-text">3.3 Pulsar 消息消费</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8B%AC%E5%8D%A0%E8%AE%A2%E9%98%85%EF%BC%88%E6%B5%81%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">独占订阅（流模型）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E7%81%BE%E8%AE%A2%E9%98%85%EF%BC%88%E6%B5%81%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">容灾订阅（流模型）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E8%AE%A2%E9%98%85%EF%BC%88%E9%98%9F%E5%88%97%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">共享订阅（队列模型）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-Pulsar-%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4"><span class="nav-number"></span> <span class="nav-text">3.4 Pulsar 消息确认</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-Pulsar-%E6%B6%88%E6%81%AF%E4%BF%9D%E7%95%99"><span class="nav-number"></span> <span class="nav-text">3.5 Pulsar 消息保留</span></a></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">一、前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.</span> <span class="nav-text">二、架构设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 整体架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Broker"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Broker</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Bookeeper"><span class="nav-number">3.</span> <span class="nav-text">2.3 Bookeeper</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E4%BC%98%E5%8A%BF"><span class="nav-number">3.1.</span> <span class="nav-text">2.4 优势</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E9%99%90%E5%88%B6%E7%9A%84%E4%B8%BB%E9%A2%98%E5%88%86%E5%8C%BA%E5%AD%98%E5%82%A8"><span class="nav-number">3.1.1.</span> <span class="nav-text">无限制的主题分区存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%BC%9D-Broker-%E6%95%85%E9%9A%9C%E6%81%A2%E5%A4%8D"><span class="nav-number">3.1.2.</span> <span class="nav-text">无缝 Broker 故障恢复</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%BC%9D-Bookeeper-%E6%95%85%E9%9A%9C%E6%81%A2%E5%A4%8D"><span class="nav-number">3.1.3.</span> <span class="nav-text">无缝 Bookeeper 故障恢复</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%BC%9D%E9%9B%86%E7%BE%A4%E6%89%A9%E5%B1%95"><span class="nav-number">3.1.4.</span> <span class="nav-text">无缝集群扩展</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">三、消息模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E9%80%9A%E7%94%A8%E7%9A%84%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.1.</span> <span class="nav-text">3.1 通用的消息模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E9%80%9A%E7%94%A8%E7%9A%84%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.2.</span> <span class="nav-text">3.2 通用的消费模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.2.1.</span> <span class="nav-text">队列模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%81%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.2.2.</span> <span class="nav-text">流模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-Pulsar-%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9"><span class="nav-number">4.3.</span> <span class="nav-text">3.3 Pulsar 消息消费</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8B%AC%E5%8D%A0%E8%AE%A2%E9%98%85%EF%BC%88%E6%B5%81%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="nav-number">4.3.1.</span> <span class="nav-text">独占订阅（流模型）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%B9%E7%81%BE%E8%AE%A2%E9%98%85%EF%BC%88%E6%B5%81%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="nav-number">4.3.2.</span> <span class="nav-text">容灾订阅（流模型）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E8%AE%A2%E9%98%85%EF%BC%88%E9%98%9F%E5%88%97%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="nav-number">4.3.3.</span> <span class="nav-text">共享订阅（队列模型）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-Pulsar-%E6%B6%88%E6%81%AF%E7%A1%AE%E8%AE%A4"><span class="nav-number">4.4.</span> <span class="nav-text">3.4 Pulsar 消息确认</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-Pulsar-%E6%B6%88%E6%81%AF%E4%BF%9D%E7%95%99"><span class="nav-number">4.5.</span> <span class="nav-text">3.5 Pulsar 消息保留</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -187,7 +187,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2023-04-16 15:40:24 / 修改时间：15:41:49" itemprop="dateCreated datePublished" datetime="2023-04-16T15:40:24+08:00">2023-04-16</time>
+      <time title="创建时间：2023-04-16 15:40:24 / 修改时间：15:47:31" itemprop="dateCreated datePublished" datetime="2023-04-16T15:40:24+08:00">2023-04-16</time>
     </span>
 
   
@@ -200,29 +200,25 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p><strong>一、前言</strong></p>
-<p>Pulsar 是一个多租户，高性能的服务间消息解决方案。最初由 Yahoo 开发，现在由 Apache Software Foundation 负责。</p>
+        <h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a><strong>一、前言</strong></h2><p>Pulsar 是一个多租户，高性能的服务间消息解决方案。最初由 Yahoo 开发，现在由 Apache Software Foundation 负责。</p>
 <p>Pulsar 是消息队列领域的一匹黑马，其最大优点在于它提供了比 Apache Kafka 更简单明了、更健壮的一系列操作功能，支持地域复制和多租户。此外，相比传统的 Kafka、RocketMQ 等，Pulsar 更加适合 IoT 的场景。</p>
-<p><strong>二、架构设计</strong></p>
-<p><strong>2.1 整体架构</strong></p>
-<p>Apache Pulsar 和其他消息系统最根本的不同是采用分层架构。</p>
+<h2 id="二、架构设计"><a href="#二、架构设计" class="headerlink" title="二、架构设计"></a><strong>二、架构设计</strong></h2><h3 id="2-1-整体架构"><a href="#2-1-整体架构" class="headerlink" title="2.1 整体架构"></a><strong>2.1 整体架构</strong></h3><p>Apache Pulsar 和其他消息系统最根本的不同是采用分层架构。</p>
 <p>Apache Pulsar 集群由两层组成：</p>
 <p>无状态服务层：由一组接收和传递消息的 Broker 组成</p>
 <p>有状态持久层：由一组 Apache BookKeeper 存储节点组成，可持久化地存储消息。</p>
 <p><img src="https://static001.geekbang.org/infoq/0e/0eb8d6c121926b5bf559d3ee5c9334da.png" alt="img"></p>
 <p>Pulsar 客户端不直接与存储层 Apache BookKeeper 交互。客户端也没有直接的 BookKeeper 访问权限。这种隔离，为 Pulsar 实现安全的多租户统一身份验证模型提供了基础。</p>
-<p><strong>2.2 Broker</strong></p>
-<p>Broker 集群在 Apache Pulsar 中形成无状态服务层。Broker 不在本地存储任何消息数据。Pulsar 主题的消息，都被存储在分布式日志存储系统（Apache BookKeeper）中。</p>
+<h3 id="2-2-Broker"><a href="#2-2-Broker" class="headerlink" title="2.2 Broker"></a><strong>2.2 Broker</strong></h3><p>Broker 集群在 Apache Pulsar 中形成无状态服务层。Broker 不在本地存储任何消息数据。Pulsar 主题的消息，都被存储在分布式日志存储系统（Apache BookKeeper）中。</p>
 <p>每个主题分区（Topic Partition）由 Pulsar 分配给某个 Broker，该 Broker 称为该主题分区的所有者。Pulsar 生产者和消费者连接到主题分区的所有者 Broker，以向所有者代理发送消息并消费消息。</p>
 <p>如果一个 Broker 发生故障，Pulsar 会自动将其拥有的主题分区移动到群集中剩余的某一个可用 Broker 中。重点说明：由于 Broker 是无状态的，因此当发生 Topic 的迁移时，Pulsar 只是将所有权从一个 Broker 转移到另一个 Broker，并不会有任何数据复制发生，故障转移非常轻量。</p>
 <p>下图显示了一个拥有 4 个 Broker 的 Pulsar 集群，其中 4 个主题分区分布在 4 个 Broker 中。每个 Broker 拥有并为一个主题分区提供消息服务。</p>
 <p><img src="https://static001.geekbang.org/infoq/b1/b147d65753248afeda1941f2523c2dd4.png" alt="img"></p>
-<h3 id="2-3-Bookeeper"><a href="#2-3-Bookeeper" class="headerlink" title="2.3 Bookeeper"></a>2.3 Bookeeper</h3><p>Apache BookKeeper 是 Apache Pulsar 的持久化存储层。Apache Pulsar 中的每个主题分区本质上都是存储在 Apache BookKeeper 中的分布式日志。</p>
+<h2 id="2-3-Bookeeper"><a href="#2-3-Bookeeper" class="headerlink" title="2.3 Bookeeper"></a><strong>2.3 Bookeeper</strong></h2><p>Apache BookKeeper 是 Apache Pulsar 的持久化存储层。Apache Pulsar 中的每个主题分区本质上都是存储在 Apache BookKeeper 中的分布式日志。</p>
 <p>每个分布式日志又被分为 Segment 分段。每个 Segment 分段作为 Apache BookKeeper 中的一个 Ledger，均匀分布并存储在 BookKeeper 群集中的多个 Bookie 中。</p>
 <p>通过 Segment 分段的方式，主题分区中的消息可以均匀和平衡地分布在群集中的所有 Bookie 中。这意味着主题分区的大小不仅受一个节点容量的限制；相反，它可以扩展到整个 BookKeeper 集群的总容量。</p>
 <p>下面的图说明了一个分为 x 个 Segment 段的主题分区。每个 Segment 段存储 3 个副本。所有 Segment 都分布并存储在 4 个 Bookie 中。</p>
 <p><img src="https://static001.geekbang.org/infoq/e1/e1c59848704fcd18318f5f56f88f9327.png" alt="img"></p>
-<h3 id="2-4-优势"><a href="#2-4-优势" class="headerlink" title="2.4 优势"></a>2.4 优势</h3><p>计算存储分离的特性给 Pulsar 带来了许多特性</p>
+<h3 id="2-4-优势"><a href="#2-4-优势" class="headerlink" title="2.4 优势"></a><strong>2.4 优势</strong></h3><p>计算存储分离的特性给 Pulsar 带来了许多特性</p>
 <p>无限制的主题分区存储</p>
 <p>无缝 Broker 故障恢复</p>
 <p>无缝 Bookeeper 故障恢复</p>
@@ -238,35 +234,35 @@
 <p>即使有 Bookie 节点出错的情况发生时，通过添加新的可用的 Bookie 来替换失败的 Bookie，所有 Broker 都可以继续接受写入，而不会牺牲主题分区的可用性。</p>
 <h4 id="无缝集群扩展"><a href="#无缝集群扩展" class="headerlink" title="无缝集群扩展"></a>无缝集群扩展</h4><p>下图说明了 Pulsar 集群扩展。当 Broker2 将消息写入 Topic1-Part2 的 Segment X 时，将 Bookie X 和 Bookie Y 添加到集群中。Broker2 立即发现新加入的 Bookies X 和 Y。然后 Broker 将尝试将 Segment X + 1 和 X + 2 的消息存储到新添加的 Bookie 中。新增加的 Bookie 立刻被使用起来，流量立即增加，而不会重新复制任何数据。除了机架感知和区域感知策略之外，BookKeeper 还提供资源感知的放置策略，以确保流量在群集中的所有存储节点之间保持平衡。</p>
 <p><img src="https://static001.geekbang.org/infoq/02/025d0802728e23660e138ade6c20818f.png" alt="img"></p>
-<h2 id="三、消息模型"><a href="#三、消息模型" class="headerlink" title="三、消息模型"></a>三、消息模型</h2><h2 id="3-1-通用的消息模型"><a href="#3-1-通用的消息模型" class="headerlink" title="3.1 通用的消息模型"></a>3.1 通用的消息模型</h2><p>消息模型一般以下 3 个方面：</p>
+<h2 id="三、消息模型"><a href="#三、消息模型" class="headerlink" title="三、消息模型"></a>三、消息模型</h2><h3 id="3-1-通用的消息模型"><a href="#3-1-通用的消息模型" class="headerlink" title="3.1 通用的消息模型"></a>3.1 通用的消息模型</h3><p>消息模型一般以下 3 个方面：</p>
 <ul>
 <li>消息消费：如何发送和消费消息</li>
 <li>消息确认（ACK）：如何确认消息</li>
 <li>消息保存（Retention）：消息保留时间，触发消息删除的原因以及怎样删除</li>
 </ul>
-<h2 id="3-2-通用的消费模型"><a href="#3-2-通用的消费模型" class="headerlink" title="3.2 通用的消费模型"></a>3.2 通用的消费模型</h2><h2 id="队列模型"><a href="#队列模型" class="headerlink" title="队列模型"></a>队列模型</h2><p>队列模型主要是采用无序或者共享的方式来消费消息。</p>
+<h3 id="3-2-通用的消费模型"><a href="#3-2-通用的消费模型" class="headerlink" title="3.2 通用的消费模型"></a>3.2 通用的消费模型</h3><h4 id="队列模型"><a href="#队列模型" class="headerlink" title="队列模型"></a>队列模型</h4><p>队列模型主要是采用无序或者共享的方式来消费消息。</p>
 <p>通过队列模型，多个消费者可以从单个管道中接收消息；当一条消息从队列发送出来后，多个消费者中的只有一个（任何一个都有可能）接收和消费这条消息。消息系统的具体实现决定了最终哪个消费者实际接收到消息。</p>
 <p>队列模型通常与无状态应用程序一起结合使用。无状态应用程序不关心排序，但它们确实需要能够确认（ack）或删除单条消息，以及尽可能地扩展消费并行性的能力。典型的基于队列模型的消息系统包括 RabbitMQ 和 RocketMQ。</p>
-<h3 id="流模型"><a href="#流模型" class="headerlink" title="流模型"></a>流模型</h3><p>流模型要求消息的消费严格排序或独占消息消费。</p>
+<h4 id="流模型"><a href="#流模型" class="headerlink" title="流模型"></a>流模型</h4><p>流模型要求消息的消费严格排序或独占消息消费。</p>
 <p>对于一个管道，使用流式模型，始终只会有一个消费者使用和消费消息。消费者按照消息写入管道的确切顺序接收从管道发送的消息。</p>
 <p>流模型通常与有状态应用程序相关联。有状态的应用程序更加关注消息的顺序及其状态。消息的消费顺序决定了有状态应用程序的状态。消息的顺序将影响应用程序处理逻辑的正确性。</p>
-<h2 id="3-3-Pulsar-消息消费"><a href="#3-3-Pulsar-消息消费" class="headerlink" title="3.3 Pulsar 消息消费"></a>3.3 Pulsar 消息消费</h2><p>Pulsar 抽象出了统一的消费模型: producer-topic-subscription-consumer</p>
+<h3 id="3-3-Pulsar-消息消费"><a href="#3-3-Pulsar-消息消费" class="headerlink" title="3.3 Pulsar 消息消费"></a>3.3 Pulsar 消息消费</h3><p>Pulsar 抽象出了统一的消费模型: producer-topic-subscription-consumer</p>
 <p>Pulsar 的消息模型既支持队列模型，也支持流模型</p>
 <p>Topic 是用于发送消息的通道。Topic 中的每条消息，可以根据消费者的订阅需求，多次被使用，每个订阅对应一个消费者组（Consumer Group）。每个 Topic 可以有不同的消费组。</p>
 <p>消费者（consumer）被组合在一起以消费消息，每个消费组是一个订阅（subscription）</p>
 <p>消费者可以拥有不同的消费方式：独占（Exclusive），故障切换（Failover）或共享（Share）</p>
 <p>Pulsar 通过这种模型，将队列模型和流模型这两种模型结合在了一起，提供了统一的 API 接口。这种模型，既不会影响消息系统的性能，也不会带来额外的开销，同时还为用户提供了更多灵活性，方便用户根据自己的实际场景来使用消息系统。</p>
-<h3 id="独占订阅（流模型）"><a href="#独占订阅（流模型）" class="headerlink" title="独占订阅（流模型）"></a>独占订阅（流模型）</h3><p>独占模式，topic 只能被一个消费者订阅。如果多于一个消费者以同样方式去订阅主题，消费者将会收到错误。</p>
+<h4 id="独占订阅（流模型）"><a href="#独占订阅（流模型）" class="headerlink" title="独占订阅（流模型）"></a>独占订阅（流模型）</h4><p>独占模式，topic 只能被一个消费者订阅。如果多于一个消费者以同样方式去订阅主题，消费者将会收到错误。</p>
 <p>下图中，只有 Consumer A-0 可以消费</p>
 <p><img src="https://static001.geekbang.org/infoq/be/be6ab0ccfaf7172192248f41a665456b.png" alt="img"></p>
-<h3 id="容灾订阅（流模型）"><a href="#容灾订阅（流模型）" class="headerlink" title="容灾订阅（流模型）"></a>容灾订阅（流模型）</h3><p>容灾模式，多个消费者可以订阅同一个 topic，消费者按消息者名称的字典序排列。第一个消费者被初始化为唯一接收消息的消费者。这个消费者被称为主消费者（master consumer）。</p>
+<h4 id="容灾订阅（流模型）"><a href="#容灾订阅（流模型）" class="headerlink" title="容灾订阅（流模型）"></a>容灾订阅（流模型）</h4><p>容灾模式，多个消费者可以订阅同一个 topic，消费者按消息者名称的字典序排列。第一个消费者被初始化为唯一接收消息的消费者。这个消费者被称为主消费者（master consumer）。</p>
 <p>当主消费者断开时，所有的消息（未被确认和后续进入的）将会被分发给下一个消费者。</p>
 <p>在下图中，Consumer-B-0 是主消费者，如果 Consumer-B-0 断开连接，Consumer-B-1 会变成主消费者去接收消息</p>
 <p><img src="https://static001.geekbang.org/infoq/7c/7cbcc1461eb0a9d9bc9c651b2f79959d.png" alt="img"></p>
-<h3 id="共享订阅（队列模型）"><a href="#共享订阅（队列模型）" class="headerlink" title="共享订阅（队列模型）"></a>共享订阅（队列模型）</h3><p>在共享（shared）或轮询(round robin)模式下，多个使用者可以订阅同一个 topic。消息通过轮询方式分发给不同的消费者，并且每个消息仅会被分发给一个消费者。当消费者断开连接，所有被发送给它，但没有被确认的消息将被重新安排，分发给其它存活的消费者。</p>
+<h4 id="共享订阅（队列模型）"><a href="#共享订阅（队列模型）" class="headerlink" title="共享订阅（队列模型）"></a>共享订阅（队列模型）</h4><p>在共享（shared）或轮询(round robin)模式下，多个使用者可以订阅同一个 topic。消息通过轮询方式分发给不同的消费者，并且每个消息仅会被分发给一个消费者。当消费者断开连接，所有被发送给它，但没有被确认的消息将被重新安排，分发给其它存活的消费者。</p>
 <p>在下图中，Consumer-C-1 和 Consumer-C-2 可以订阅该主题，但是 Consumer-C-3 和其他消费者也可以订阅该主题。</p>
 <p><img src="https://static001.geekbang.org/infoq/77/775575526c76db7e7e2f09175d9af462.png" alt="img"></p>
-<h2 id="3-4-Pulsar-消息确认"><a href="#3-4-Pulsar-消息确认" class="headerlink" title="3.4 Pulsar 消息确认"></a>3.4 Pulsar 消息确认</h2><p>当使用分布式消息系统时，可能会发生故障。比如在消费者从消息系统中的主题消费消息的过程中，消费者和 Broker 都可能发生错误。消息确认（ACK）的目的就是保证当发生这样的故障后，消费者能够从上一次停止的地方恢复消费，保证既不会丢失消息，也不会重复处理已经 ACK 的消息。</p>
+<h3 id="3-4-Pulsar-消息确认"><a href="#3-4-Pulsar-消息确认" class="headerlink" title="3.4 Pulsar 消息确认"></a>3.4 Pulsar 消息确认</h3><p>当使用分布式消息系统时，可能会发生故障。比如在消费者从消息系统中的主题消费消息的过程中，消费者和 Broker 都可能发生错误。消息确认（ACK）的目的就是保证当发生这样的故障后，消费者能够从上一次停止的地方恢复消费，保证既不会丢失消息，也不会重复处理已经 ACK 的消息。</p>
 <p>在 Pulsar 中，每个订阅中都使用一个专门的数据结构——游标（Cursor）来跟踪订阅中的每条消息的 ACK 状态。每当消费者确认消息时，游标都会更新。更新游标可确保消费者不会再次收到消息。</p>
 <p>Pulsar 提供两种消息确认方法，单条确认（Individual Ack）和累积确认（Cumulative Ack）。通过累积确认，消费者只需要确认它收到的最后一条消息。主题分区中的所有消息（包括）提供消息 ID 将被标记为已确认，并且不会再次传递给消费者。</p>
 <p>Pulsar 可以支持消息的单条确认，也就是选择性确认。消费者可以单独确认一条消息。被确认后的消息将不会被重新传递。下图说明了单条确认和累积确认的差异（灰色框中的消息被确认并且不会被重新传递）。在图的上半部分，它显示了累计确认的一个例子，M12 之前的消息被标记为 acked。在图的下半部分，它显示了单独进行 acking 的示例。仅确认消息 M7 和 M12 - 在消费者失败的情况下，除了 M7 和 M12 之外，其他所有消息将被重新传送。</p>
@@ -274,7 +270,7 @@
 <p>独占订阅或容灾订阅的消费者能够对消息进行单条确认和累积确认；共享订阅的消费者只允许对消息进行单条确认。单条确认消息的能力为处理消费者故障提供了更好的体验。对于某些应用来说，处理一条消息可能需要很长时间或者非常昂贵，防止重新传送已经确认的消息非常重要。</p>
 <p>游标（Cursor）由 Broker 来管理，利用 BookKeeper 的 Ledger 提供存储。</p>
 <p>Apache Pulsar 提供了灵活的消息消费订阅类型和消息确认方法，通过简单的统一的 API，就可以支持各种消息和流的使用场景。</p>
-<h2 id="3-5-Pulsar-消息保留"><a href="#3-5-Pulsar-消息保留" class="headerlink" title="3.5 Pulsar 消息保留"></a>3.5 Pulsar 消息保留</h2><p>在消息被确认后，Pulsar 的 Broker 会更新对应的游标。当 Topic 里面中的一条消息，被所有的订阅都确认 ack 后，才能删除这条消息。Pulsar 还允许通过设置保留时间，将消息保留更长时间，即使所有订阅已经确认消费了它们。</p>
+<h3 id="3-5-Pulsar-消息保留"><a href="#3-5-Pulsar-消息保留" class="headerlink" title="3.5 Pulsar 消息保留"></a>3.5 Pulsar 消息保留</h3><p>在消息被确认后，Pulsar 的 Broker 会更新对应的游标。当 Topic 里面中的一条消息，被所有的订阅都确认 ack 后，才能删除这条消息。Pulsar 还允许通过设置保留时间，将消息保留更长时间，即使所有订阅已经确认消费了它们。</p>
 <p>下图说明了如何在有 2 个订阅的主题中保留消息。订阅 A 在 M6 和订阅 B 已经消耗了 M10 之前的所有消息之前已经消耗了所有消息。这意味着 M6 之前的所有消息（灰色框中）都可以安全删除。订阅 A 仍未使用 M6 和 M9 之间的消息，无法删除它们。如果主题配置了消息保留期，则消息 M0 到 M5 将在配置的时间段内保持不变，即使 A 和 B 已经确认消费了它们。</p>
 <p><img src="https://static001.geekbang.org/infoq/4b/4b146de1e7639b905c3633e057c2582d.png" alt="img"></p>
 <p>在消息保留策略中，Pulsar 还支持消息生存时间（TTL）。如果消息未在配置的 TTL 时间段内被任何消费者使用，则消息将自动标记为已确认。消息保留期消息 TTL 之间的区别在于：消息保留期作用于标记为已确认并设置为已删除的消息，而 TTL 作用于未 ack 的消息。上面的图例中说明了 Pulsar 中的 TTL。例如，如果订阅 B 没有活动消费者，则在配置的 TTL 时间段过后，消息 M10 将自动标记为已确认，即使没有消费者实际读取该消息。</p>
