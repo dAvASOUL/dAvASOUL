@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"davasoul.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.15.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="ETCD框架从etcd的架构图中我们可以看到，etcd主要分为四个部分：  HTTP Server：用于处理用户发送的API请求以及其它etcd节点的同步与心跳信息请求。 Store：用于处理etcd支持的各类功能的事务，包括数据索引、节点状态变更、监控与反馈、事件处理与执行等等，是etcd对用户提供的大多数API功能的具体实现。 Raft：Raft强一致性算法的具体实现，是etcd的核心。 WA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ETCD框架及Raft原理">
+<meta property="og:url" content="https://davasoul.github.io/2023/05/05/ETCD%E6%A1%86%E6%9E%B6%E5%8F%8ARaft%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="小代的博客">
+<meta property="og:description" content="ETCD框架从etcd的架构图中我们可以看到，etcd主要分为四个部分：  HTTP Server：用于处理用户发送的API请求以及其它etcd节点的同步与心跳信息请求。 Store：用于处理etcd支持的各类功能的事务，包括数据索引、节点状态变更、监控与反馈、事件处理与执行等等，是etcd对用户提供的大多数API功能的具体实现。 Raft：Raft强一致性算法的具体实现，是etcd的核心。 WA">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-05-05T01:57:40.000Z">
+<meta property="article:modified_time" content="2023-05-05T02:03:31.956Z">
+<meta property="article:author" content="MR.D">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://davasoul.github.io/2023/05/05/ETCD%E6%A1%86%E6%9E%B6%E5%8F%8ARaft%E5%8E%9F%E7%90%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://davasoul.github.io/2023/05/05/ETCD%E6%A1%86%E6%9E%B6%E5%8F%8ARaft%E5%8E%9F%E7%90%86/","path":"2023/05/05/ETCD框架及Raft原理/","title":"ETCD框架及Raft原理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ETCD框架及Raft原理 | 小代的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">小代的博客</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ETCD%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">ETCD框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raft%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">Raft核心流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leader%E9%80%89%E4%B8%BE%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">*Leader选举过程*</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E4%B8%AA%E5%80%99%E9%80%89%E8%80%85%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">4.</span> <span class="nav-text">多个候选者的情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%86%E8%A2%96%E6%8C%82%E6%8E%89%E6%83%85%E5%86%B5"><span class="nav-number">5.</span> <span class="nav-text">*领袖挂掉情况*</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0Leader%EF%BC%9F%EF%BC%88%E5%BD%93Leader%E6%8D%A2%E4%BA%86%E4%B9%8B%E5%90%8E%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%80%8E%E4%B9%88%E6%89%BE%E5%88%B0Leader%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">客户端如何找到Leader？（当Leader换了之后客户端怎么找到Leader）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E5%A4%8D%E5%88%B6"><span class="nav-number">7.</span> <span class="nav-text">日志复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%84%91%E8%A3%82%E6%83%85%E5%86%B5"><span class="nav-number">8.</span> <span class="nav-text">脑裂情况</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MR.D</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://davasoul.github.io/2023/05/05/ETCD%E6%A1%86%E6%9E%B6%E5%8F%8ARaft%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MR.D">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小代的博客">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ETCD框架及Raft原理 | 小代的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ETCD框架及Raft原理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-05-05 09:57:40 / 修改时间：10:03:31" itemprop="dateCreated datePublished" datetime="2023-05-05T09:57:40+08:00">2023-05-05</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="ETCD框架"><a href="#ETCD框架" class="headerlink" title="ETCD框架"></a><strong>ETCD框架</strong></h3><p>从etcd的架构图中我们可以看到，etcd主要分为四个部分：</p>
+<ul>
+<li>HTTP Server：用于处理用户发送的API请求以及其它etcd节点的同步与心跳信息请求。</li>
+<li>Store：用于处理etcd支持的各类功能的事务，包括数据索引、节点状态变更、监控与反馈、事件处理与执行等等，是etcd对用户提供的大多数API功能的具体实现。</li>
+<li>Raft：Raft强一致性算法的具体实现，是etcd的核心。</li>
+<li>WAL：Write Ahead Log（预写式日志），是etcd的数据存储方式。除了在内存中存有所有数据的状态以及节点的索引以外，etcd就通过WAL进行持久化存储。WAL中，所有的数据提交前都会事先记录日志。Snapshot是为了防止数据过多而进行的状态快照；Entry表示存储的具体日志内容。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://mmbiz.qpic.cn/mmbiz_png/sXFqMxQoVLHdHKj59bKV7NrH8gYxRc8pcrX604WZF8ayEBNjsrZojkKiaBefuGs9uVlk1T66dnDHDWGBHlmPD9Q/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">https://mmbiz.qpic.cn/mmbiz_png/sXFqMxQoVLHdHKj59bKV7NrH8gYxRc8pcrX604WZF8ayEBNjsrZojkKiaBefuGs9uVlk1T66dnDHDWGBHlmPD9Q/640?wx_fmt=png&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1</a></p>
+<h3 id="Raft核心流程"><a href="#Raft核心流程" class="headerlink" title="Raft核心流程"></a>Raft核心流程</h3><p>Raft 算法核心流程可以归纳为：</p>
+<ul>
+<li>首先选出 leader，leader 节点负责接收外部的数据更新&#x2F;删除请求；</li>
+<li>然后日志复制到其他 follower 节点，同时通过安全性的准则来保证整个日志复制的一致性；</li>
+<li>如果遇到 leader 故障，followers 会重新发起选举出新的 leader；</li>
+</ul>
+<h3 id="Leader选举过程"><a href="#Leader选举过程" class="headerlink" title="*Leader选举过程*"></a><em><strong>*Leader选举过程*</strong></em></h3><p>Raft协议种存在两个超时设置用来控制选举过程，第一个超时设置是选举超时（election timeout），选举超时用来设置一个节点从Follower变成一个candidate所需要等待的时间，这个等待时间控制在150ms到300ms之间，这个等待时间是随机的，随机是为了尽量避免产生多个candidate，给选主过程制造麻烦。</p>
+<p>加入a，b，c3个节点都设置election timeout时，节点a跑得比其他其他节点快些成为第一个candidate，并开始发起第一轮选举。候选者首先给自己先投一票，然后向其他节点发送Request Vote消息。</p>
+<p>如果其他节点收到消息后发现并没有进行过此次投票，则他就会为先收到投票请求的候选者进行投票并重置election timeout，一旦candidate获得了大多数选票（大多数保证每一轮选举只有一个candidate会获胜），则他就会变成leader</p>
+<p>节点a成为leader后，会间隔指定时间发送Append Entries消息给他的Follower，间隔时间是由心跳超时控制的（heartbeat timeout，即第二种超时类型），fower收到消息后会重置等待时间，这样就能阻止Follower成为candidate，这里需要说明一下，领袖广播心跳的周期必须要短于“选举定时器”的超时时间，否则群众会频繁成为候选者，也就会出现频繁发生选举，切换Leader的情况</p>
+<h3 id="多个候选者的情况"><a href="#多个候选者的情况" class="headerlink" title="多个候选者的情况"></a>多个候选者的情况</h3><p>上文我们提到在群众转变成候选者过程中会随机分配一个选举超时给每个节点，这样做可以尽量避免产生多个candidate，但并不能100%保证不出现2个candidate的情况。当出现了2个节点成为candidate，此时需要如何确保选主顺畅呢？</p>
+<p>假设有5个节点a、b、c、d、e，节点a、b、c同时成为candidate，并且各自发起了新一轮的选举</p>
+<h3 id="领袖挂掉情况"><a href="#领袖挂掉情况" class="headerlink" title="*领袖挂掉情况*"></a><em><strong>*领袖挂掉情况*</strong></em></h3><p>假设领袖A挂掉，群众B和C会的“选举超时时间”会一直运行，当群众B先超时时，会成为候选人，然后后续流程和“领导人选举”流程一样，即通知投票 -&gt; 接收投票 -&gt; 成为领袖 -&gt; 心跳探测。</p>
+<h3 id="客户端如何找到Leader？（当Leader换了之后客户端怎么找到Leader）"><a href="#客户端如何找到Leader？（当Leader换了之后客户端怎么找到Leader）" class="headerlink" title="客户端如何找到Leader？（当Leader换了之后客户端怎么找到Leader）"></a><strong>客户端如何找到Leader？（当Leader换了之后客户端怎么找到Leader）</strong></h3><p>Raft算法规定客户端将所有请求发送给Leader。客户端启动的时候，如何知道哪一个节点是Leader呢？具体办法是客户端随机挑选一个服务器进行通信，如果客户端选的服务器不是领导人，那么被挑选的服务器会拒绝客户端的请求，并且提供它最近接收到的领导人的信息，即通过收到Leader发送的心跳的RPC得到Leader的网络地址。</p>
+<p>还有一种情况，如果领导人已经崩溃了，那么客户端的请求就会超时，客户端之后会再次重试随机挑选服务器的过程。</p>
+<h3 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h3><p>OK，那我从两方面来说一下日志复制，分别是正常的日志复制流程应该是怎样的，另一个就是出现领导者与跟随者日志不一致的了之后怎么保证日志的一致性。</p>
+<p><strong>正常的日志复制流程</strong></p>
+<p>日志复制可以看作是两段式的，先“提交”，再“应用”。当客户端发起请求，请求会先到领袖节点，领袖节点会把该指令作为一条新的日志附加到自身的日志集合，然后向其它节点发起追加条目请求（AppendEntries RPC），来要求它们将这条日志附加到各自本地的日志集合。当领袖节点得到大多数从节点的成功响应了之后，领袖节点就把日志应用到本地状态机中（此时认为该日志是committed的），然后把操作成功的结果返回给客户端。</p>
+<p>那如果没得到大部分从节点的成功响应呢？</p>
+<p>如果领导者在预定时间内未收到多数从节点的响应，则会重新发送日志条目，直到收到大多数从节点的确认响应，或者领导者的任期结束。</p>
+<p><em><strong>*Raft 对日志一致性的保证*</strong></em></p>
+<p>Raft 保证：<strong>如果不同的节点日志集合中的两个日志条目拥有相同的 term 和 index，那么它们一定存储了相同的指令</strong>。</p>
+<p>为什么可以作出这种保证？因为 raft 要求 leader 在一个 term 内针对同一个 index 只能创建一条日志，并且永远不会修改它。</p>
+<p>同时 raft 也保证：<strong>如果不同的节点日志集合中的两个日志条目拥有相同的 term 和 index，那么它们之前的所有日志条目也全部相同</strong>。</p>
+<p>这是因为 leader 发出的 AppendEntries RPC 中会额外携带<strong>上一条</strong>日志的 (term, index)，如果 follower 在本地找不到相同的 (term, index) 日志，则<strong>拒绝接收这次新的日志</strong>。</p>
+<p><em><strong>*如何处理日志不一致*</strong></em></p>
+<p>follower 节点上任何与 leader 不一致的日志，都会被 leader 节点上的日志所覆盖。要使得 follower 的日志集合跟自己保持完全一致，leader 必须先找到二者间<strong>最后一次</strong>达成一致的地方。因为一旦这条日志达成一致，在这之前的日志一定也都一致（看****Raft 对日志一致性的保证****）。</p>
+<p>Leader 针对每个 follower 都维护一个 <strong>next index</strong>，表示下一条需要发送给该follower 的日志索引。当一个 leader 刚刚上任时，它初始化所有 next index 值为自己最后一条日志的 index+1。当Leader向Follower发送AppendEntries RPC时，它携带了（team，nextIndex - 1）二元组信息，</p>
+<p>但凡某个 follower 的日志跟 leader 不一致，那么下次 AppendEntries RPC 的一致性检查就会失败。在被 follower 拒绝这次 Append Entries RPC 后，leader 会减少 next index 的值并进行重试。最终一定会存在一个 next index 使得 leader 和 follower 在这之前的日志都保持一致。针对每个 follower，一旦确定了 next index 的值，leader 便开始从该 index 同步日志，follower 会删除掉现存的不一致的日志，保留 leader 最新同步过来的。</p>
+<h3 id="脑裂情况"><a href="#脑裂情况" class="headerlink" title="脑裂情况"></a>脑裂情况</h3><p>当网络问题导致脑裂，出现双Leader情况时，每个网络可以理解为一个独立的网络，因为原先的Leader独自在一个区，所以向他提交的数据不可能被复制到大多数节点上，所以数据永远都不会提交。</p>
+<p>当网络恢复之后，旧的Leader发现集群中的新Leader的Term比自己大，则自动降级为Follower，并从新Leader处同步数据达成集群数据一致</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/04/16/pulsar%E7%9A%84%E4%BC%98%E5%8A%BF%E5%9C%A8%E5%93%AA%EF%BC%9F/" rel="prev" title="pulsar的优势在哪？">
+                  <i class="fa fa-chevron-left"></i> pulsar的优势在哪？
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MR.D</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
